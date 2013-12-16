@@ -22,6 +22,8 @@ const static PROGMEM prog_uchar CLEAR_MSG[]     =  "                    ";
 
 #ifdef LOCALE_FR
 #include "Menu.FR.hh"
+#elif defined(LOCALE_PT)
+#include "Menu.PT.hh"
 #else
 // Use US ENGLISH as default
 #include "Menu.EN.hh"
