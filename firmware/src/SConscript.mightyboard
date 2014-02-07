@@ -234,6 +234,8 @@ flags=[
 	'-DCORDICHK',
 	'-DROUNDKD',
 	'-DDIVKD',
+	'-D__DELAY_BACKWARD_COMPATIBLE__',
+	'-D__PROG_TYPES_COMPAT__',
 	'-DHAS_RGB_LED']
 
 if (platform == 'ff_creator'):
