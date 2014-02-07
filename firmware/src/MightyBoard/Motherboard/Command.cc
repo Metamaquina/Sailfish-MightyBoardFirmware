@@ -29,7 +29,9 @@
 #include "Pin.hh"
 #include <util/delay.h>
 #include "Piezo.hh"
+#ifdef HAS_RGB_LED
 #include "RGB_LED.hh"
+#endif
 #include "Interface.hh"
 #include "UtilityScripts.hh"
 #include "stdio.h"
@@ -68,7 +70,11 @@ uint8_t currentToolIndex = 0;
 uint32_t line_number;
 
 #if defined(HEATERS_ON_STEROIDS)
-#error "Building with HEATERS_ON_STEROIDS defined will create firmware which allows ALL heaters to heatup at the same time; this requires a PSU, power connector, and associated electronics capable of handling much higher current loads than the stock Replicators can handle" 
+#if !defined(FF_CREATOR) && !defined(WANHAO_DUP4)
+#error "Building with HEATERS_ON_STEROIDS defined will create firmware which allows ALL heaters to heatup at the same time; this requires a PSU, power connector, and associated electronics capable of handling much higher current loads than the stock Replicators can handle"
+#else
+#warning "Building with HEATERS_ON_STEROIDS defined will create firmware which allows ALL heaters to heatup at the same time; this requires a PSU, power connector, and associated electronics capable of handling much higher current loads than the stock Replicators can handle" 
+#endif
 #endif
 
 #if !defined(HEATERS_ON_STEROIDS)
@@ -775,7 +781,7 @@ bool processExtruderCommandPacket(int8_t overrideToolIndex) {
 #endif
 			/// Handle override gcode temp
 			if (( temp ) && ( eeprom::getEeprom8(eeprom_offsets::OVERRIDE_GCODE_TEMP, 0) )) {
-				temp = eeprom::getEeprom16(eeprom_offsets::PREHEAT_SETTINGS + preheat_eeprom_offsets::PREHEAT_PLATFORM_OFFSET, 100);
+				temp = eeprom::getEeprom16(eeprom_offsets::PREHEAT_SETTINGS + preheat_eeprom_offsets::PREHEAT_PLATFORM_TEMP, 100);
 			}
 
 			board.getPlatformHeater().set_target_temperature(temp);
@@ -880,7 +886,9 @@ void handlePauseState(void) {
 		    if ( coldPause || !(eeprom::getEeprom8(eeprom_offsets::HEAT_DURING_PAUSE, DEFAULT_HEAT_DURING_PAUSE)) )
 			heatersOff();
 		    if ( coldPause ) {
+#ifdef HAS_RGB_LED
 			    RGB_LED::setColor(0, 0, 0, true);
+#endif
 			    steppers::enableAxes(0xf8, false);
 		    }
 
@@ -1114,7 +1122,9 @@ void runCommandSlice() {
 	    if ( coldPause || heat_shutdown || !Motherboard::getBoard().user_input_timeout.hasElapsed() ) return;
 	    coldPause = true;
 	    heatersOff();
+#ifdef HAS_RGB_LED
 	    RGB_LED::setColor(0, 0, 0, true);
+#endif
 	    steppers::enableAxes(0xf8, false);
 	    return;
 	}
@@ -1210,7 +1220,9 @@ void runCommandSlice() {
 					ib.popScreen();
 				Motherboard::interfaceBlinkOff();
 				BOARD_STATUS_CLEAR(Motherboard::STATUS_WAITING_FOR_BUTTON);
+#ifdef HAS_RGB_LED
 				RGB_LED::setDefaultColor();
+#endif
 				mode = READY;
 			}
 		}
@@ -1489,15 +1501,22 @@ void runCommandSlice() {
 				if (command_buffer.getLength() >= 6) {
 					pop8(); // remove the command code
 
+#ifdef HAS_RGB_LED
 					uint8_t red = pop8();
 					uint8_t green = pop8();
 					uint8_t blue = pop8();
-					uint8_t blink_rate = pop8();
-
-                    pop8();	//uint8_t effect
-                    line_number++;
-                    RGB_LED::setLEDBlink(blink_rate);
-                    RGB_LED::setCustomColor(red, green, blue);
+#else
+					pop8();
+					pop8();
+					pop8();
+#endif
+					pop8(); // uint8_t blink_rate = pop8();
+					pop8();	//uint8_t effect
+					line_number++;
+					// RGB_LED::setLEDBlink(blink_rate);
+#ifdef HAS_RGB_LED
+					RGB_LED::setCustomColor(red, green, blue);
+#endif
 
 				}
 			}else if (command == HOST_CMD_SET_BEEP){

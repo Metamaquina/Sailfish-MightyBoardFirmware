@@ -1,10 +1,16 @@
+#ifndef __MENU_EN_HH__
 
-
-
+#define __MENU_EN_HH__
 
 #ifdef MODEL_REPLICATOR
+#if defined(FF_CREATOR)
+const static PROGMEM prog_uchar SPLASH1_MSG[] = "Sailfish FF Creator ";
+#elif WANHAO_DUP4
+const static PROGMEM prog_uchar SPLASH1_MSG[] = "Wanhao Duplicator 4 ";
+#else
 const static PROGMEM prog_uchar SPLASH1_MSG[] = "Sailfish Replicator1";
-#if !defined(HEATERS_ON_STEROIDS)
+#endif
+#if !defined(HEATERS_ON_STEROIDS) || defined(FF_CREATOR) || defined(WANHAO_DUP4)
 const static PROGMEM prog_uchar SPLASH2_MSG[] = "--------------------";
 #else
 const static PROGMEM prog_uchar SPLASH2_MSG[] = "-- Heater Special --";
@@ -74,8 +80,11 @@ const static PROGMEM prog_uchar JOG3Z_MSG[] = "  <-Y (Back)        ";
 const static PROGMEM prog_uchar DISTANCESHORT_MSG[] = "SHORT";
 const static PROGMEM prog_uchar DISTANCELONG_MSG[] =  "LONG";
 
-const static PROGMEM prog_uchar HEATING_MSG[] =        "Heating:";
-const static PROGMEM prog_uchar HEATING_SPACES_MSG[] = "Heating:            ";
+#define HEATING_MSG_DEF "Heating:"
+#define HEATING_MSG_LEN (sizeof(HEATING_MSG_DEF) - 1)
+const static PROGMEM prog_uchar HEATING_MSG[] =        HEATING_MSG_DEF;
+// HEATING_SPACES_MSG is a full LCD screen wide (20 spaces)
+const static PROGMEM prog_uchar HEATING_SPACES_MSG[] = HEATING_MSG_DEF "            ";
 
 const static PROGMEM prog_uchar BUILD_PERCENT_MSG[] =    " --%";
 const static PROGMEM prog_uchar EXTRUDER1_TEMP_MSG[] =   "R Extruder: ---/---C";
@@ -121,8 +130,6 @@ const static PROGMEM prog_uchar VERSION_MSG[] = 	       "Version Information";
 const static PROGMEM prog_uchar DSTEPS_MSG[] =           "Disable Steppers";
 const static PROGMEM prog_uchar ESTEPS_MSG[] =           "Enable Steppers  ";
 const static PROGMEM prog_uchar PLATE_LEVEL_MSG[] =      "Level Build Plate";
-const static PROGMEM prog_uchar LED_BLINK_MSG[] =        "Blink LEDs       ";
-const static PROGMEM prog_uchar LED_STOP_MSG[] =         "Stop Blinking!";
 const static PROGMEM prog_uchar PREHEAT_SET_MSG[] =      "Preheat Settings";
 const static PROGMEM prog_uchar SETTINGS_MSG[] =         "General Settings";
 const static PROGMEM prog_uchar RESET_MSG[] =            "Restore Settings";
@@ -248,4 +255,4 @@ const static PROGMEM prog_uchar ERROR_BOT_TYPE[] =
     "I am a Replicator.  This build is for   another bot. See:   makerbot.com/help";
 #endif
 
-
+#endif // __MENU_EN_HH__

@@ -180,7 +180,7 @@ void eeprom_write_sound(Sound sound, uint16_t dest)
 void setDefaultBuzzEffects(uint16_t eeprom_base)
 {
 	Sound blare = {NOTE_B2, 500};
-	eeprom_write_sound(blare,eeprom_base + buzz_eeprom_offsets::BASIC_BUZZ_OFFSET);
+	eeprom_write_sound(blare,eeprom_base + buzz_eeprom_offsets::SOUND_ON);
 }
     
 /**
@@ -189,9 +189,9 @@ void setDefaultBuzzEffects(uint16_t eeprom_base)
  */
 void setDefaultsPreheat(uint16_t eeprom_base)
 {
-    eeprom_write_word((uint16_t*)(eeprom_base + preheat_eeprom_offsets::PREHEAT_RIGHT_OFFSET), DEFAULT_PREHEAT_TEMP);
-    eeprom_write_word((uint16_t*)(eeprom_base + preheat_eeprom_offsets::PREHEAT_LEFT_OFFSET), DEFAULT_PREHEAT_TEMP);
-    eeprom_write_word((uint16_t*)(eeprom_base + preheat_eeprom_offsets::PREHEAT_PLATFORM_OFFSET), DEFAULT_PREHEAT_HBP);
+    eeprom_write_word((uint16_t*)(eeprom_base + preheat_eeprom_offsets::PREHEAT_RIGHT_TEMP), DEFAULT_PREHEAT_TEMP);
+    eeprom_write_word((uint16_t*)(eeprom_base + preheat_eeprom_offsets::PREHEAT_LEFT_TEMP), DEFAULT_PREHEAT_TEMP);
+    eeprom_write_word((uint16_t*)(eeprom_base + preheat_eeprom_offsets::PREHEAT_PLATFORM_TEMP), DEFAULT_PREHEAT_HBP);
     eeprom_write_byte((uint8_t*)(eeprom_base + preheat_eeprom_offsets::PREHEAT_ON_OFF_OFFSET), (1<<HEAT_MASK_RIGHT) + (1<<HEAT_MASK_PLATFORM));
 }
 
@@ -286,7 +286,17 @@ void factoryResetEEPROM() {
 	uint8_t vRefBase[] = {118,118,40,118,118};  //(AB maxed out)
 
 	/// Write 'MainBoard' settings
-#ifdef MODEL_REPLICATOR
+#ifdef FF_CREATOR
+#define THE_REPLICATOR_STR "The FF Creator"
+	eeprom_write_block(THE_REPLICATOR_STR,
+			   (uint8_t*)eeprom_offsets::MACHINE_NAME,sizeof(THE_REPLICATOR_STR)); // name is nul
+	uint16_t vidPid[] = {0x23C1, 0xD314};		/// PID/VID for The Replicator 1
+#elif WANHAO_DUP4
+#define THE_REPLICATOR_STR "Wanhao Duplicatr"
+	eeprom_write_block(THE_REPLICATOR_STR,
+			   (uint8_t*)eeprom_offsets::MACHINE_NAME,sizeof(THE_REPLICATOR_STR)); // name is nul
+	uint16_t vidPid[] = {0x23C1, 0xD314};		/// PID/VID for The Replicator 1
+#elif MODEL_REPLICATOR
 #define THE_REPLICATOR_STR "The Replicator"
 	eeprom_write_block(THE_REPLICATOR_STR,
 			   (uint8_t*)eeprom_offsets::MACHINE_NAME,sizeof(THE_REPLICATOR_STR)); // name is nul
