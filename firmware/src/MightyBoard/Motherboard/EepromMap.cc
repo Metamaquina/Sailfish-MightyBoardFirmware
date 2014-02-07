@@ -292,7 +292,11 @@ void factoryResetEEPROM() {
 			   (uint8_t*)eeprom_offsets::MACHINE_NAME,sizeof(THE_REPLICATOR_STR)); // name is nul
 	uint16_t vidPid[] = {0x23C1, 0xD314};		/// PID/VID for The Replicator 1
 #elif WANHAO_DUP4
+#if METAMAQUINA
+#define THE_REPLICATOR_STR "Metamaquina"
+#else
 #define THE_REPLICATOR_STR "Wanhao Duplicatr"
+#endif
 	eeprom_write_block(THE_REPLICATOR_STR,
 			   (uint8_t*)eeprom_offsets::MACHINE_NAME,sizeof(THE_REPLICATOR_STR)); // name is nul
 	uint16_t vidPid[] = {0x23C1, 0xD314};		/// PID/VID for The Replicator 1
