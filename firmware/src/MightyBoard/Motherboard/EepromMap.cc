@@ -301,7 +301,8 @@ void factoryResetEEPROM() {
 			   (uint8_t*)eeprom_offsets::MACHINE_NAME,sizeof(THE_REPLICATOR_STR)); // name is nul
 	uint16_t vidPid[] = {0x23C1, 0xD314};		/// PID/VID for The Replicator 1
 #elif MODEL_REPLICATOR
-#define THE_REPLICATOR_STR "The Replicator"
+//#define THE_REPLICATOR_STR "The Replicator"
+#define THE_REPLICATOR_STR "Mesh and Make "
 	eeprom_write_block(THE_REPLICATOR_STR,
 			   (uint8_t*)eeprom_offsets::MACHINE_NAME,sizeof(THE_REPLICATOR_STR)); // name is nul
 	uint16_t vidPid[] = {0x23C1, 0xD314};		/// PID/VID for The Replicator 1
